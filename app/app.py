@@ -59,6 +59,48 @@ def inject_css() -> None:
                 linear-gradient(180deg, #08101c 0%, #07111f 45%, #050c15 100%);
             color: var(--text);
         }
+        header[data-testid="stHeader"] {
+            background: linear-gradient(180deg, rgba(5, 14, 28, 0.94), rgba(5, 14, 28, 0.78));
+            border-bottom: 1px solid rgba(87, 199, 255, 0.12);
+        }
+        [data-testid="stToolbar"] {
+            background: rgba(7, 19, 34, 0.88);
+            border-radius: 999px;
+            border: 1px solid rgba(87, 199, 255, 0.14);
+            padding: 0.1rem 0.2rem;
+        }
+        [data-testid="stToolbar"] button {
+            color: #c3ebff;
+        }
+        [data-testid="stDecoration"] {
+            background: linear-gradient(90deg, rgba(87, 199, 255, 0.55), rgba(255, 209, 102, 0.45));
+        }
+        section[data-testid="stSidebar"] {
+            background:
+                linear-gradient(180deg, rgba(5, 14, 28, 0.98), rgba(7, 19, 34, 0.98)),
+                linear-gradient(135deg, rgba(87, 199, 255, 0.08), transparent);
+            border-right: 1px solid rgba(87, 199, 255, 0.12);
+        }
+        section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+            padding-top: 1rem;
+        }
+        section[data-testid="stSidebar"] h2 {
+            color: #7ee0ff;
+            font-size: 1.1rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        section[data-testid="stSidebar"] [data-testid="stMetric"] {
+            background: linear-gradient(180deg, rgba(10, 27, 48, 0.92), rgba(7, 20, 36, 0.92));
+            border: 1px solid rgba(87, 199, 255, 0.16);
+            box-shadow: none;
+        }
+        section[data-testid="stSidebar"] [data-testid="stMetricLabel"] {
+            color: #9ad8f3;
+        }
+        section[data-testid="stSidebar"] [data-testid="stMetricValue"] {
+            color: #eff6ff;
+        }
         .block-container {
             padding-top: 2.2rem;
             padding-bottom: 2rem;
@@ -344,9 +386,13 @@ def inject_css() -> None:
             margin-bottom: 0.35rem;
         }
         .sidebar-note {
-            color: var(--muted);
-            font-size: 0.85rem;
-            line-height: 1.5;
+            color: #c3ebff;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            padding: 0.9rem 1rem;
+            border-radius: 16px;
+            border: 1px solid rgba(87, 199, 255, 0.16);
+            background: linear-gradient(180deg, rgba(10, 27, 48, 0.72), rgba(7, 20, 36, 0.72));
         }
         @media (max-width: 980px) {
             .hero-grid {
@@ -657,7 +703,7 @@ def main() -> None:
     with st.sidebar:
         st.markdown("## Control Room")
         st.markdown(
-            '<div class="sidebar-note">Synthetic telemetry is fixed for the demo. Use the trend explorer to switch services and inspect reliability, safety, and cost movement.</div>',
+            '<div class="sidebar-note">Synthetic telemetry is fixed for the demo. Use the trend explorer to inspect reliability, safety, and cost movement across the fleet without leaving the control rail.</div>',
             unsafe_allow_html=True,
         )
         st.metric("Critical alerts", sum(1 for alert in snapshot.alerts if alert.severity == "critical"))
