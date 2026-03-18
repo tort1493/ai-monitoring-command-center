@@ -15,3 +15,11 @@ def test_summary_contains_actionable_recommendations() -> None:
 
     assert snapshot.summary.recommendations
     assert "incident command" in snapshot.summary.recommendations[0].lower()
+
+
+def test_snapshot_includes_trends_and_timeline() -> None:
+    snapshot = build_demo_snapshot()
+
+    assert len(snapshot.trends) == len(snapshot.services)
+    assert snapshot.timeline
+    assert len(snapshot.trends[0].latency_p95_ms) == 8

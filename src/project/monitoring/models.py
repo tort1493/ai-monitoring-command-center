@@ -58,6 +58,23 @@ class FleetRollup:
 
 
 @dataclass(frozen=True)
+class ServiceTrend:
+    service_name: str
+    latency_p95_ms: list[int]
+    error_rate: list[float]
+    hallucination_risk: list[float]
+    spend_hourly_usd: list[float]
+
+
+@dataclass(frozen=True)
+class TimelineEvent:
+    time_label: str
+    severity: str
+    title: str
+    detail: str
+
+
+@dataclass(frozen=True)
 class SummaryCard:
     headline: str
     recommendations: list[str] = field(default_factory=list)
@@ -68,5 +85,7 @@ class MonitoringSnapshot:
     services: list[ServiceStatus]
     alerts: list[Alert]
     incidents: list[Incident]
+    trends: list[ServiceTrend]
+    timeline: list[TimelineEvent]
     rollup: FleetRollup
     summary: SummaryCard
