@@ -4,10 +4,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY app ./app
 COPY src ./src
-COPY infra ./infra
+COPY scripts ./scripts
 
 ENV PYTHONPATH=/app/src
-EXPOSE 8000
+EXPOSE 8501
 
-CMD ["uvicorn", "infra.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["streamlit", "run", "app/app.py", "--server.address=0.0.0.0", "--server.port=8501"]

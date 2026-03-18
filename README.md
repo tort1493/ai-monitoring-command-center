@@ -1,52 +1,47 @@
-# Project Title — AI Lead System (Template)
+# AI Monitoring Command Center
 
-> One-liner: what it does + who it’s for.
+This project is a local-first Streamlit dashboard that simulates how an operations team monitors AI systems in production. It highlights model health, latency, cost, moderation drift, and active incidents in a single command-center view.
 
-## Demo
-- Screenshot/GIF:
-- Short video (2–4 min):
+## Features
+
+- Live-style command-center UI with service status, alerts, and incident feed
+- Synthetic monitoring snapshot with realistic AI operations signals
+- Rule-based alerting for latency, error rate, hallucination risk, moderation drift, and budget pressure
+- Executive summary and operator recommendations generated from the current system state
+- Lightweight pytest coverage for alerting and fleet rollups
 
 ## Quickstart
+
+1. Create and activate a virtual environment.
+2. Install dependencies:
+
 ```bash
-make setup
-make train
-make serve
+pip install -r requirements.txt
 ```
 
-## Architecture
-![architecture](docs/img/architecture.png)
+3. Launch the UI:
 
-## Key features
-- Feature 1
-- Feature 2
-- Feature 3
+```bash
+streamlit run app/app.py
+```
 
-## Evaluation summary
-- Baseline: …
-- Model: …
-- Offline metrics: …
-- Slice analysis: …
-- Failure modes: …
+4. Run tests:
 
-## Safety & governance
-- Data privacy notes:
-- Refusal/abstain behavior (if LLM):
-- Audit logging:
-- Model card: `docs/04_model_card.md`
-- Risk register: `docs/05_risk_register.md`
+```bash
+pytest
+```
 
-## Monitoring & ops
-- Monitored signals:
-- Alerts:
-- Rollback criteria:
-- Runbook: `docs/07_runbook.md`
+## Project Layout
 
-## Docs
-- Product brief: `docs/00_product_brief.md`
-- PRD-lite: `docs/01_prd_lite.md`
-- Architecture: `docs/02_architecture.md`
-- Evaluation report: `docs/03_evaluation_report.md`
-- Launch plan: `docs/06_launch_plan.md`
+- `app/app.py`: Streamlit command-center interface
+- `src/project/monitoring/`: monitoring models, synthetic data, alert logic, and summaries
+- `tests/`: unit coverage for alerts and snapshot rollups
+- `docs/`: architecture and operating notes for the portfolio project
 
-## Roadmap
-- Next iteration:
+## Monitoring Concepts
+
+- `Latency p95`: tail latency for model and gateway services
+- `Error rate`: failed request percentage over the latest observation window
+- `Hallucination risk`: proxy score from evaluator runs and sampled QA checks
+- `Moderation drift`: percentage-point change from baseline safety performance
+- `Budget burn`: daily spend versus the configured daily budget

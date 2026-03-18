@@ -1,4 +1,4 @@
-.PHONY: setup lint test train eval serve docker-build docker-run
+.PHONY: setup lint test run export-snapshot docker-build docker-run
 
 setup:
 \tpython -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
@@ -10,17 +10,14 @@ lint:
 test:
 \tpytest -q
 
-train:
-\tpython scripts/train.py
+run:
+\tstreamlit run app/app.py
 
-eval:
-\tpython scripts/eval.py
-
-serve:
-\tuvicorn infra.api.main:app --reload --host 0.0.0.0 --port 8000
+export-snapshot:
+\tpython scripts/export_snapshot.py
 
 docker-build:
-\tdocker build -t ai-project .
+\tdocker build -t ai-monitoring-command-center .
 
 docker-run:
-\tdocker run -p 8000:8000 ai-project
+\tdocker run -p 8501:8501 ai-monitoring-command-center
