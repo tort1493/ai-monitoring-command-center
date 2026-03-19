@@ -125,9 +125,6 @@ def inject_css() -> None:
             color: var(--text);
             font-family: "Space Grotesk", "Segoe UI", sans-serif;
         }
-        div[data-testid="stVerticalBlock"] div:has(> .command-panel) {
-            width: 100%;
-        }
         .command-hero {
             position: relative;
             overflow: hidden;
@@ -442,8 +439,16 @@ def render_rollup(snapshot) -> None:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Monitored Services", len(snapshot.services), f"{snapshot.rollup.services_degraded} degraded")
     col2.metric("Active Alerts", len(snapshot.alerts), snapshot.rollup.highest_open_severity.upper())
-    col3.metric("Spend Today", f"${snapshot.rollup.total_spend_today:,.0f}", f"{snapshot.rollup.budget_utilization:.0%} of budget")
-    col4.metric("Avg Hallucination Risk", f"{snapshot.rollup.avg_hallucination_risk:.0%}", "fleet baseline")
+    col3.metric(
+        "Spend Today",
+        f"${snapshot.rollup.total_spend_today:,.0f}",
+        f"{snapshot.rollup.budget_utilization:.0%} of budget",
+    )
+    col4.metric(
+        "Avg Hallucination Risk",
+        f"{snapshot.rollup.avg_hallucination_risk:.0%}",
+        "fleet baseline",
+    )
 
 
 def format_metric_value(value: float, unit: str) -> str:
@@ -548,7 +553,7 @@ def render_signal_panel(snapshot) -> None:
         f"""
         <div class="chart-shell">
             <div class="chart-caption">
-                <span>{html.escape(service_name)} · {html.escape(metric_label)}</span>
+                <span>{html.escape(service_name)} | {html.escape(metric_label)}</span>
                 <span>Latest: {format_metric_value(latest_value, unit)}</span>
             </div>
             {build_svg_chart(values, color, color)}
@@ -576,7 +581,10 @@ def render_summary_panel(snapshot) -> None:
         """,
         unsafe_allow_html=True,
     )
-    st.markdown(f'<div class="summary-line">{html.escape(snapshot.summary.headline)}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="summary-line">{html.escape(snapshot.summary.headline)}</div>',
+        unsafe_allow_html=True,
+    )
     for index, item in enumerate(snapshot.summary.recommendations, start=1):
         st.markdown(
             f"""
@@ -588,6 +596,22 @@ def render_summary_panel(snapshot) -> None:
             unsafe_allow_html=True,
         )
     st.markdown("</div>", unsafe_allow_html=True)
+
+
+def render_metric_bar(label: str, ratio: float, value: str, color: str) -> str:
+    safe_ratio = max(0.0, min(ratio, 1.0))
+    width = safe_ratio * 100
+    return f"""
+        <div class="service-metric">
+            <div class="service-metric-head">
+                <span>{html.escape(label)}</span>
+                <span>{html.escape(value)}</span>
+            </div>
+            <div class="metric-bar">
+                <div class="metric-fill" style="width:{width:.1f}%; background:{color};"></div>
+            </div>
+        </div>
+    """
 
 
 def render_service_matrix(snapshot) -> None:
@@ -611,28 +635,12 @@ def render_service_matrix(snapshot) -> None:
                     {render_metric_bar('Latency p95', service.latency_p95_ms / 2000, f'{service.latency_p95_ms} ms', '#57c7ff')}
                     {render_metric_bar('Error rate', service.error_rate / 0.08, f'{service.error_rate * 100:.1f}%', '#ff5d73')}
                     {render_metric_bar('Hallucination risk', service.hallucination_risk / 0.25, f'{service.hallucination_risk * 100:.0f}%', '#ff9a3c')}
-                    {render_metric_bar('Budget use', (service.spend_today_usd / service.daily_budget_usd), f'{service.spend_today_usd / service.daily_budget_usd:.0%}', '#ffd166')}
+                    {render_metric_bar('Budget use', service.spend_today_usd / service.daily_budget_usd, f'{service.spend_today_usd / service.daily_budget_usd:.0%}', '#ffd166')}
                     <div class="service-note">{html.escape(service.note)}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-
-
-def render_metric_bar(label: str, ratio: float, value: str, color: str) -> str:
-    safe_ratio = max(0.0, min(ratio, 1.0))
-    width = safe_ratio * 100
-    return f"""
-        <div class="service-metric">
-            <div class="service-metric-head">
-                <span>{html.escape(label)}</span>
-                <span>{html.escape(value)}</span>
-            </div>
-            <div class="metric-bar">
-                <div class="metric-fill" style="width:{width:.1f}%; background:{color};"></div>
-            </div>
-        </div>
-    """
 
 
 def render_alert_stack(snapshot) -> None:
@@ -642,7 +650,7 @@ def render_alert_stack(snapshot) -> None:
         st.markdown(
             f"""
             <div class="alert-card" style="border-left:4px solid {color};">
-                <div class="alert-label" style="color:{color};">{alert.severity.upper()} · {html.escape(alert.service_name)}</div>
+                <div class="alert-label" style="color:{color};">{alert.severity.upper()} | {html.escape(alert.service_name)}</div>
                 <div class="alert-title">{html.escape(alert.title)}</div>
                 <div class="alert-meta">{html.escape(alert.description)}</div>
                 <div class="alert-meta" style="margin-top:0.35rem;">{html.escape(alert.metric_name)}: {html.escape(alert.current_value)}</div>
@@ -659,7 +667,7 @@ def render_timeline(snapshot) -> None:
         st.markdown(
             f"""
             <div class="timeline-card" style="border-left:4px solid {color};">
-                <div class="timeline-time" style="color:{color};">{html.escape(event.time_label)} · {event.severity.upper()}</div>
+                <div class="timeline-time" style="color:{color};">{html.escape(event.time_label)} | {event.severity.upper()}</div>
                 <div class="timeline-title">{html.escape(event.title)}</div>
                 <div class="timeline-detail">{html.escape(event.detail)}</div>
             </div>
@@ -683,7 +691,7 @@ def render_incidents(snapshot) -> None:
                         <div class="incident-meta">{html.escape(incident.summary)}</div>
                     </div>
                     <div class="status-chip" style="color:{color}; background:rgba(255,255,255,0.04);">
-                        {incident.severity.upper()} · {html.escape(incident.status_label)}
+                        {incident.severity.upper()} | {html.escape(incident.status_label)}
                     </div>
                 </div>
                 <div class="incident-meta">Commander: {html.escape(incident.commander)}</div>

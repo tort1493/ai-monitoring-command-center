@@ -19,6 +19,13 @@ This project is a local-first Streamlit dashboard that simulates how an operatio
 pip install -r requirements.txt
 ```
 
+Windows PowerShell virtual environment activation:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
 3. Launch the UI:
 
 ```bash

@@ -1,7 +1,8 @@
 .PHONY: setup lint test run export-snapshot docker-build docker-run
 
 setup:
-\tpython -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
+\tpython -m venv .venv
+\tpython -m pip install -r requirements.txt
 
 lint:
 \truff check .
